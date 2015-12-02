@@ -1,0 +1,45 @@
+
+		.md-toolbar-tools h1 {
+		  font-size: inherit;
+		  font-weight: inherit;
+		  margin: inherit;
+		}
+
+		.md-padding canvas{
+			height: 100%;
+		}
+		.md-toolbar-tools h1 {
+		  background: #785F48;
+		  color: #fafafa;
+		  line-height: 44px;
+		  margin-left: -16px;
+		  padding: 10px;
+		}		
+
+
+#a-section {
+	background: #D0D0D0;
+}		
+
+#a-chain {
+	background: #ddd;
+}
+
+
+#a-section md-divider {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+#a-section md-list-item > p, #a-section md-list-item > .md-list-item-inner > p, #a-section md-list-item .md-list-item-inner > p, #a-section md-list-item .md-list-item-inner > .md-list-item-inner > p {
+  -webkit-user-select: none;
+  /* Chrome all / Safari all */
+  -moz-user-select: none;
+  /* Firefox all */
+  -ms-user-select: none;
+  /* IE 10+ */
+  user-select: none;
+  /* Likely future */ }
+
+ md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
+  height: auto;
+  min-height: 350px;
+}

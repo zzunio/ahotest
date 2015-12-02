@@ -1,0 +1,226 @@
+<html lang="en" ng-app="StarterApp">
+  <head>
+    <link rel="stylesheet" href="https://cdn.gitcdn.xyz/cdn/angular/bower-material/v1.0.0-rc5/angular-material.css">    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
+    <style type="text/css">
+		.md-toolbar-tools h1 {
+		  font-size: inherit;
+		  font-weight: inherit;
+		  margin: inherit;
+		}
+
+		.md-padding canvas{
+			height: 100%;
+		}
+		.md-menu-toolbar {
+			min-height: auto;
+		}
+    </style>
+  </head>
+
+  <body layout="column" ng-controller="AppCtrl as ctrl">
+
+
+  <md-toolbar class="md-menu-toolbar">
+    <div layout="row">
+      <md-toolbar-filler layout="" layout-align="center center">
+        <md-icon md-svg-icon="call:chat"></md-icon>
+      </md-toolbar-filler>
+      <div>
+        <md-menu-bar>
+          <md-menu>
+            <button ng-click="$mdOpenMenu()">
+              File
+            </button>
+            <md-menu-content>
+              <md-menu-item>
+                <md-button ng-click="ctrl.sampleAction('share', $event)">
+                  Share...
+                </md-button>
+              </md-menu-item>
+              <md-menu-divider></md-menu-divider>
+              <md-menu-item>
+                <md-menu>
+                  <md-button ng-click="$mdOpenMenu()">New</md-button>
+                  <md-menu-content>
+                    <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">Document</md-button></md-menu-item>
+                    <md-menu-item><md-button ng-click="ctrl.sampleAction('New Spreadsheet', $event)">Spreadsheet</md-button></md-menu-item>
+                    <md-menu-item><md-button ng-click="ctrl.sampleAction('New Presentation', $event)">Presentation</md-button></md-menu-item>
+                    <md-menu-item><md-button ng-click="ctrl.sampleAction('New Form', $event)">Form</md-button></md-menu-item>
+                    <md-menu-item><md-button ng-click="ctrl.sampleAction('New Drawing', $event)">Drawing</md-button></md-menu-item>
+                  </md-menu-content>
+                </md-menu>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="ctrl.sampleAction('Open', $event)">
+                  Open...
+                  <span class="md-alt-text"> {{ 'M-O' | keyboardShortcut }}</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button disabled="disabled" ng-click="ctrl.sampleAction('Rename', $event)">
+                  Rename
+                </md-button>
+              </md-menu-item>
+              <md-menu-divider></md-menu-divider>
+              <md-menu-item>
+                <md-button ng-click="ctrl.sampleAction('Print', $event)">
+                  Print
+                  <span class="md-alt-text">{{ 'M-P' | keyboardShortcut }}</span>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+          <md-menu>
+            <button ng-click="$mdOpenMenu()">
+              + Camera
+            </button>
+            <md-menu-content>
+              <md-menu-item class="md-indent">
+                <md-icon md-svg-icon="undo"></md-icon>
+                <md-button ng-click="ctrl.sampleAction('undo', $event)">
+                  Orbit Camera
+                  <span class="md-alt-text">{{ 'M-Z' | keyboardShortcut }}</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item class="md-indent">
+                <md-icon md-svg-icon="redo"></md-icon>
+                <md-button ng-click="ctrl.sampleAction('redo', $event)">
+                  Redo
+                  <span class="md-alt-text">{{ 'M-Y' | keyboardShortcut }}</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-divider></md-menu-divider>
+              <md-menu-item class="md-indent">
+                <md-button ng-click="ctrl.sampleAction('Find and replace', $event)">
+                  Find and replace...
+                  <span class="md-alt-text">{{ 'M-S-H' | keyboardShortcut }}</span>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>     
+        </md-menu-bar>
+      </div>
+    </div>
+  </md-toolbar>
+
+    <div layout="row" flex>
+        <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+          
+        </md-sidenav>
+        <div layout="column" flex id="content">
+            <md-content layout="column" flex class="md-padding" id="main-container">
+            </md-content>
+        </div>
+    </div>
+    <!-- Angular Material Dependencies -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="lib/three.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js"></script>	
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/ColladaLoader.js"></script>
+
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTF-parser.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFLoader.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFLoaderUtils.js"></script>
+	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFAnimation.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-messages.min.js"></script>
+
+    <script src="https://cdn.gitcdn.xyz/cdn/angular/bower-material/v1.0.0-rc5/angular-material.js"></script>
+
+    <script type="text/javascript">
+		var app = angular.module('StarterApp', ['ngMaterial']);
+
+		app.controller('AppCtrl', ['$scope', '$mdSidenav', '$mdDialog', function($scope, $mdSidenav, $mdDialog){
+
+		    this.settings = {
+		      printLayout: true,
+		      showRuler: true,
+		      showSpellingSuggestions: true,
+		      presentationMode: 'edit'
+		    };
+
+		  $scope.toggleSidenav = function(menuId) {
+		    $mdSidenav(menuId).toggle();
+		  };
+
+		  $scope.init = function() {
+		    $scope.scene = new THREE.Scene();
+
+		    // create a camera, which defines where we're looking at.        
+		    $scope.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+		    $scope.camera.position.z = 400;
+
+			var texture = THREE.ImageUtils.loadTexture( 'textures/crate.gif' );
+
+			var geometry = new THREE.BoxGeometry( 200, 200, 200 );
+			var material = new THREE.MeshBasicMaterial( { map: texture } );        
+
+			$scope.mesh = new THREE.Mesh( geometry, material );
+			$scope.scene.add( $scope.mesh );
+
+		    // create a render, sets the background color and the size
+		    $scope.renderer = new THREE.WebGLRenderer();
+			$scope.renderer.setPixelRatio( window.devicePixelRatio );
+			$('#main-container').append($scope.renderer.domElement);
+			$scope.renderer.setSize( $('#main-container').innerWidth()-32, $('#main-container').innerHeight()-32);
+			$scope.animate();
+		  };
+
+			$scope.animate = function () {
+
+				requestAnimationFrame( $scope.animate );
+
+				$scope.mesh.rotation.x += 0.005;
+				$scope.mesh.rotation.y += 0.01;
+
+				$scope.renderer.render( $scope.scene, $scope.camera );
+			};		  
+
+		    this.sampleAction = function(name, ev) {
+		      $mdDialog.show($mdDialog.alert()
+		        .title(name)
+		        .textContent('You triggered the "' + name + '" action')
+		        .ok('Great')
+		        .targetEvent(ev)
+		      );
+		    };		
+ 
+		}]);
+
+		app.filter('keyboardShortcut', function($window) {
+		    return function(str) {
+		      if (!str) return;
+		      var keys = str.split('-');
+		      var isOSX = /Mac OS X/.test($window.navigator.userAgent);
+
+		      var seperator = (!isOSX || keys.length > 2) ? '+' : '';
+
+		      var abbreviations = {
+		        M: isOSX ? '' : 'Ctrl',
+		        A: isOSX ? 'Option' : 'Alt',
+		        S: 'Shift'
+		      };
+
+	      return keys.map(function(key, index) {
+	        var last = index == keys.length - 1;
+	        return last ? key : abbreviations[key];
+	      }).join(seperator);
+	    };
+	  });
+
+		$( document ).ready(function() {
+			angular.element('body').scope().init();
+		});
+		
+    </script>	
+
+  </body>
+</html>
