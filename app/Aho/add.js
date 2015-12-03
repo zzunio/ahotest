@@ -5,6 +5,7 @@
         var Add = {};        
         var meshCount = 0;
         var cameraCount = 0;
+        var lightCount = 0;
         
         Add.addBox = function() {
             var width = 100;
@@ -25,14 +26,37 @@
 
 
         Add.addCamera = function() {
-            var camera = new THREE.PerspectiveCamera( 50, 1, 1, 10000 );
-            camera.name = 'PerspectiveCamera ' + ( ++ cameraCount );
+            var camera = new THREE.PerspectiveCamera( 50, 1, 1, 1000 );
+            camera.name = 'Máy quay ' + ( ++ cameraCount );
             // camera.position.set(500, 250, 500);
             camera.position.copy(Editor.camera.position);
             // camera.lookAt(Editor.grid);
             camera.lookAt(new THREE.Vector3());
             Editor.addObject( camera );
             Editor.select( camera );
+        }
+
+
+        Add.addAmbientLight = function() {
+            var color = 0x222222;
+            var light = new THREE.AmbientLight( color );
+            light.name = 'Nguồn sáng lan tỏa ' + ( ++ lightCount );
+            Editor.addObject( light );
+            Editor.select( light );
+        }
+
+        Add.addDirectionalLight = function() {
+            var color = 0xffffff;
+            var intensity = 1;
+
+            var light = new THREE.DirectionalLight( color, intensity );
+            light.name = 'Nguồn sáng trực tiếp ' + ( ++ lightCount );
+            light.target.name = 'DirectionalLight ' + ( lightCount ) + ' Target';
+
+            light.position.set( 0.5, 1, 0.75 ).multiplyScalar( 200 );
+
+            Editor.addObject( light );
+            Editor.select( light );
         }
 
         return Add;

@@ -1,0 +1,37 @@
+<md-dialog aria-label="Add Action">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Thêm hành động</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="assets/close1.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+        <md-content layout-padding class="autoScroll">
+        <md-input-container class="md-icon-float md-icon-right md-block">
+          <label>Thời gian chạy</label>
+          <md-icon md-svg-src="duration"></md-icon>
+          <div layout="row">
+            <input ng-model="duration" type="number" step="5" flex>
+          </div>
+        </md-input-container>
+        <md-input-container class="md-icon-float md-icon-right md-block">
+          <label>Thời gian bắt đầu</label>
+          <md-icon md-svg-src="time_start"></md-icon>
+          <div layout="row">
+            <input ng-model="start_time" type="number" step="5" flex>
+          </div>
+        </md-input-container>  
+        </md-content>      
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="clickOk()" style="margin-right:20px;" >
+        Thêm hành động
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

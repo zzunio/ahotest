@@ -10,7 +10,6 @@
         var self = this;
         $scope.project = Project;
         $scope.playStatus = 1;
-        $scope.project = null;
 
         $scope.config =
         {
@@ -120,7 +119,6 @@
 
         angular.element(document).ready(function ()
         {
-            // Viewport.init($('#main-container').innerWidth() - 40, $('#main-container').innerHeight() - 40);
             var renderer = new THREE.WebGLRenderer();
             Editor.signals.rendererChanged.dispatch(renderer);
             $scope.addBlankProject();

@@ -1,9 +1,7 @@
 <html lang="en" ng-app="Aho">
   <head>
   	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="https://cdn.gitcdn.xyz/cdn/angular/bower-material/v1.0.0-rc5/angular-material.css">   
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="lib/angular-material/angular-material.min.css"> 
     <link rel="stylesheet" href="aho.css">   
     <meta name="viewport" content="initial-scale=1" />
   </head>
@@ -12,14 +10,29 @@
       <div class="md-toolbar-tools" layout-align="start center">
         <h1>me3D</h1>
         
+
+        <md-menu md-offset="0 -7">
+          <md-button aria-label="Project" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+            <md-icon md-menu-origin="" md-svg-icon="assets/open2.svg"></md-icon>
+          </md-button>
+          <md-menu-content width="4">    
+             <md-menu-item>
+                <md-button ng-click="zz();">  <md-icon md-menu-origin="" md-svg-icon="assets/new1.svg"></md-icon>Thêm dự án mới</md-button>     
+             </md-menu-item>                  
+             <md-menu-item>
+                <md-button ng-click="project.importJson();">  <md-icon md-menu-origin="" md-svg-icon="assets/open2.svg"></md-icon>Mở Dự Án Đã Có</md-button>
+             </md-menu-item>                           
+             <md-menu-item>
+                <md-button ng-click="project.exportJson();">  <md-icon md-menu-origin="" md-svg-icon="save"></md-icon>Lưu dự án</md-button>                    
+            </md-menu-item>                    
+          </md-menu-content>
+        </md-menu>
+
         <md-menu md-offset="0 -7">
           <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
             <md-icon md-menu-origin="" md-svg-icon="assets/add.svg"></md-icon>
           </md-button>
-          <md-menu-content width="4">
-            <md-menu-item>
-              <md-button ng-click="ctrl.announceClick($index)">  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Thêm Dự Án </md-button>
-			       </md-menu-item>              
+          <md-menu-content width="4">          
 			       <md-menu-item>
               <md-button ng-click="addSlide();">  <md-icon md-menu-origin="" md-svg-icon="assets/night.svg"></md-icon>Thêm Trình Diễn </md-button>
 			       </md-menu-item>              
@@ -28,28 +41,25 @@
               <md-button ng-click="ctrl.addBasic('addCamera')">  <md-icon md-menu-origin="" md-svg-icon="assets/camera.svg"></md-icon>Thêm Camera </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-click="ctrl.announceClick($index)">  <md-icon md-menu-origin="" md-svg-icon="assets/sun1.svg"></md-icon>Thêm Đèn Bao Quanh </md-button>
+              <md-button ng-click="ctrl.addBasic('addAmbientLight')">  <md-icon md-menu-origin="" md-svg-icon="assets/sun1.svg"></md-icon>Thêm Ánh Sáng Bao Quanh </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-click="ctrl.announceClick($index)">  <md-icon md-menu-origin="" md-svg-icon="assets/light2.svg"></md-icon>Thêm Đèn Rọi </md-button>
-            </md-menu-item>
+              <md-button ng-click="ctrl.addBasic('addDirectionalLight')">  <md-icon md-menu-origin="" md-svg-icon="assets/light2.svg"></md-icon>Thêm Ánh Sáng Trực Tiếp </md-button>
+            </md-menu-item>            
             <md-menu-item>
               <md-button ng-click="ctrl.addBasic('addBox')">  <md-icon md-menu-origin="" md-svg-icon="assets/box1.svg"></md-icon>Thêm Đối Tượng Box </md-button>
             </md-menu-item>                      
           </md-menu-content>
         </md-menu>
+
+
         <md-button class="md-icon-button" aria-label="open" ng-click="ctrl.addBox()">
 	      <md-tooltip>
 	        Thêm tài nguyên 3D
-	      </md-tooltip>        
-          <md-icon md-svg-icon="assets/add-file.svg"></md-icon>
+	      </md-tooltip>
+          <md-icon md-svg-icon="import"></md-icon>
         </md-button>  
-        <md-button class="md-icon-button" aria-label="save">
-	      <md-tooltip>
-	        Lưu dự án
-	      </md-tooltip>        
-          <md-icon md-svg-icon="assets/save3.svg"></md-icon>
-        </md-button>          
+       
         <md-button class="md-icon-button" aria-label="play" ng-click="playClick()">
 	      <md-tooltip>
 	        Trình diễn
@@ -70,19 +80,19 @@
           </md-button>
           <md-menu-content width="4">
             <md-menu-item>
+              <md-button>  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Dự án mẫu 1</md-button>
+             </md-menu-item>  
+            <md-menu-item>
+              <md-button>  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Dự án mẫu 2</md-button>
+             </md-menu-item>                         
+            <md-menu-item>
               <md-button ng-click="testGLTF()">  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Test GLTF</md-button>
              </md-menu-item>              
           </md-menu-content>
         </md-menu>
 
         <span flex></span>
-     <md-input-container style="margin-right: 10px;">
-        <label>Transform</label>
-        <md-select ng-model="tt">
-          <md-option ng-repeat="tt in config.transType" value="{{tt}}">{{tt}}</md-option>
-        </md-select>
-      </md-input-container>
-
+          <h3 id="pname">{{project.pname}}</h3>
           <md-switch ng-model="config.showGrid" aria-label="Switch 1">Grid</md-switch>
         <md-button class="md-icon-button" aria-label="Settings">
           <md-icon md-svg-icon="assets/hangouts.svg"></md-icon>
@@ -92,21 +102,64 @@
     <div layout="row" flex>
         <div flex="25" layout="column" flex>
         	<div id="a-chain" flex="50" layout="column">        		
-				<md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>        		        		
-					<md-tab label="Trình diễn" layout="column">
+				<md-tabs md-selected="project.tab1Selected" md-border-bottom md-autoselect>        		        		
+					<md-tab label="Trình diễn" layout="column" style="text-align: center;">
 	        			<md-list ng-cloak >
-		        			<md-list-item class="md-1-line" ng-repeat="item in project.slides">
+		        			<md-list-item class="md-1-line" ng-repeat="item in project.slides" ng-click="project.slideClick(item)">
 		        				<md-icon md-svg-icon="assets/night.svg"></md-icon>
 		        				<p>{{ item.sname }}</p>
 		        			</md-list-item>
-	        			</md-list>					
+	        			</md-list>			
+               <md-button class="md-raised md-primary" ng-if="project.slides.length<1" ng-click="addSlide();"><md-icon md-svg-icon="assets/add4.svg"></md-icon> 1 trình diễn</md-button>
 					</md-tab>
-					<md-tab label="Kịch bản">
+					<md-tab label="Kịch bản" id="act-chain">
               <md-subheader class="md-primary">
-                <md-button class="md-fab md-mini" aria-label="addAnchor">
-                  <md-icon md-svg-src="anchor"></md-icon>
-                </md-button>
+
+                  <md-menu md-offset="0 -7">
+                    <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                      <md-icon md-menu-origin="" md-svg-icon="camera"></md-icon>
+                    </md-button>
+                    <md-menu-content width="4">          
+                       <md-menu-item>
+                        <md-button ng-click="project.addAction(0)">  <md-icon md-menu-origin="" md-svg-icon="atype0"></md-icon>Di chuyển đến đây</md-button>
+                       </md-menu-item>                                                        
+                       <md-menu-item>
+                        <md-button ng-click="project.addAction(1)">  <md-icon md-menu-origin="" md-svg-icon="atype1"></md-icon>Đứng im</md-button>
+                       </md-menu-item>                      
+                       <md-menu-item>
+                        <md-button ng-click="project.addAction(2)">  <md-icon md-menu-origin="" md-svg-icon="atype2"></md-icon>Phóng to thủ nhỏ vào 1 vật</md-button>
+                       </md-menu-item>            
+                       <md-menu-item>
+                        <md-button ng-click="project.addAction(3)">  <md-icon md-menu-origin="" md-svg-icon="atype3"></md-icon>Bay quanh đối tượng</md-button>
+                       </md-menu-item>                                    
+                    </md-menu-content>
+                  </md-menu>
+                  
+                  <md-menu md-offset="0 -7">
+                    <md-button aria-label="Open demo menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                      <md-icon md-menu-origin="" md-svg-icon="magic"></md-icon>
+                    </md-button>
+                    <md-menu-content width="4">          
+                       <md-menu-item>
+                        <md-button>  <md-icon md-menu-origin="" md-svg-icon="atype4"></md-icon>Trời đổ tuyết</md-button>
+                       </md-menu-item>                                                        
+                       <md-menu-item>
+                        <md-button>  <md-icon md-menu-origin="" md-svg-icon="atype5"></md-icon>Bão ma trận</md-button>
+                       </md-menu-item>                      
+                    </md-menu-content>
+                  </md-menu> 
+
+                  <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                    <md-icon md-menu-origin="" md-svg-icon="run_slide1"></md-icon>
+                  </md-button>                               
+    
               </md-subheader>
+              <div id="act-items">              
+                  <md-button ng-repeat="item in project.actions | filter:{id_slide:project.activeSlide.uuid}">
+                  <div class="act-item" style="background-color:{{item.atype.color}}"><md-icon md-svg-icon="atype{{item.atype.id}}"></md-icon>
+                  {{item.atype.name}} ({{item.duration}}s)</div>
+                  </md-button>
+              </div>
 					</md-tab>
 					<md-tab label="Tài nguyên">
 
@@ -126,35 +179,37 @@
         </div>
     </div>
     <!-- Angular Material Dependencies -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="lib/three.min.js"></script>
 	
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/TransformControls.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/EditorControls.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/DragControls.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/renderers/Projector.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js"></script>	
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/ColladaLoader.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/cameras/CombinedCamera.js"></script>
+  <script src="lib/three.min.js"></script>
+	<!--  <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script> -->
+	
+	<script src="lib/examples/js/controls/OrbitControls.js"></script>
+  <script src="lib/examples/js/controls/TransformControls.js"></script>
+	<script src="lib/examples/js/controls/EditorControls.js"></script>
+	<script src="lib/examples/js/controls/DragControls.js"></script>
+	<script src="lib/examples/js/renderers/Projector.js"></script>
+	<script src="lib/examples/js/libs/stats.min.js"></script>	
+	<script src="lib/examples/js/loaders/ColladaLoader.js"></script>
+	<script src="lib/examples/js/cameras/CombinedCamera.js"></script>
 
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTF-parser.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFLoader.js"></script>
-	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFLoaderUtils.js"></script>
-  <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/gltf/glTFAnimation.js"></script>
+	<script src="lib/examples/js/loaders/gltf/glTF-parser.js"></script>
+	<script src="lib/examples/js/loaders/gltf/glTFLoader.js"></script>
+	<script src="lib/examples/js/loaders/gltf/glTFLoaderUtils.js"></script>
+  <script src="lib/examples/js/loaders/gltf/glTFAnimation.js"></script>
   
   <script src="lib/ternjs/signal.js"></script>
   <script src="lib/signals.min.js"></script>
 
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-messages.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>    
+    <script src="lib/angular-animate/angular-animate.min.js"></script>
+    <script src="lib/angular-route/angular-route.min.js"></script>
+    <script src="lib/angular-aria/angular-aria.min.js"></script>
 
-    <script src="https://cdn.gitcdn.xyz/cdn/angular/bower-material/v1.0.0-rc5/angular-material.js"></script>    
+    <script src="lib/angular-material/angular-material.min.js"></script>    
+
+
     <script src="app/aho/Aho.js"></script>    
     <script src="app/aho/editor.js"></script>
     <script src="app/aho/viewport.js"></script>

@@ -25,6 +25,16 @@
 	background: #ddd;
 }
 
+.act-item {
+	color: #ffffff;
+	font-size: 10px;
+	padding: 0 5px;
+	border-radius: 3px;
+}
+
+#act-items .md-button {
+	margin:6px 0;
+}
 
 #a-section md-divider {
   margin-top: 10px;
@@ -43,3 +53,13 @@
   height: auto;
   min-height: 350px;
 }
+
+
+#pname {
+	border-right: 1px solid #ccc;
+	margin-right: 15px;
+	padding-right: 15px;	
+}
+/*#act-chain md-icon {
+	color: #fff;
+}*/
