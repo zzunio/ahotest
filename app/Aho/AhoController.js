@@ -69,13 +69,6 @@
         $scope.addSlide = function ()
         {
             Project.addSlide();
-            // var ll = this.slides.length;
-            // $scope.slides.push(
-            // {
-            //     id : ll + 1,
-            //     name : 'Slide' + (ll + 1)
-            // }
-            // );
         }
 
         $scope.removeSlide = function (i)

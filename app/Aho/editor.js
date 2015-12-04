@@ -84,9 +84,12 @@
         Editor.textures = {};
         Editor.scripts = {};
 
+
         Editor.selected = null;
         Editor.helpers = {};
         Editor.grid = new THREE.GridHelper(500, 25);
+
+        // Editor.cameras = {};
 
         // Editor.renderer = new THREE.WebGLRenderer();
 
@@ -142,8 +145,7 @@
 
                 var helper;
                 if ( object instanceof THREE.Camera ) {
-
-                    helper = new THREE.CameraHelper( object, 10 );
+                    helper = new THREE.CameraHelper( object, 10 );                    
 
                 } else if ( object instanceof THREE.PointLight ) {
 
@@ -179,6 +181,8 @@
                 Editor.sceneHelpers.add( helper );
                 Editor.helpers[ object.id ] = helper;
                 Editor.signals.helperAdded.dispatch( helper );
+
+
             };
 
         }();   
@@ -223,26 +227,6 @@
 
         },
 
-        Editor.clearProject = function ()
-        {
-            // this.history.clear();
-            // this.storage.clear();
-
-            Editor.camera.position.set(500, 250, 500);
-            Editor.camera.lookAt(new THREE.Vector3());
-
-            var objects = Editor.scene.children;
-            while (objects.length > 0)
-            {
-                Editor.removeObject(objects[0]);
-            }
-
-            Editor.geometries = {};
-            Editor.materials = {};
-            Editor.textures = {};
-            Editor.scripts = {};
-            Editor.camera.updateProjectionMatrix();
-        };
 
         Editor.select = function (object)
         {

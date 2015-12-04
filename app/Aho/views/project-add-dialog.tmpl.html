@@ -1,0 +1,32 @@
+<md-dialog aria-label="Add Action">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Thêm dự án mới</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="assets/close1.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px;">
+        <md-content layout="row" layout-padding layout-wrap layout-fill>
+          <md-whiteframe class="md-whiteframe-1dp" flex-sm="45" flex-gt-sm="35" flex-gt-md="25" layout layout-align="center center" ng-click="clickOk(0)">
+            <span>Empty project</span>
+          </md-whiteframe>
+          <md-whiteframe class="md-whiteframe-1dp" flex-sm="45" flex-gt-sm="35" flex-gt-md="25" layout layout-align="center center" ng-click="clickOk(1)">
+            <span>Dự án mẫu 1</span>
+          </md-whiteframe>
+          <md-whiteframe class="md-whiteframe-1dp" flex-sm="45" flex-gt-sm="35" flex-gt-md="25" layout layout-align="center center" ng-click="clickOk(2)">
+            <span>Dự án mẫu 2</span>
+          </md-whiteframe>          
+        </md-content>      
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="clickOk(0)" style="margin-right:20px;" >
+        Thêm dự án
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

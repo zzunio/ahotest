@@ -545,6 +545,10 @@
         signals.objectRemoved.add(function (object)
         {
             var materialsNeedUpdate = false;
+            if (object instanceof THREE.PerspectiveCamera) {
+                    delete Editor.cameras[object.uuid];
+                }                
+
             object.traverse(function (child)
             {
                 if (child instanceof THREE.Light)

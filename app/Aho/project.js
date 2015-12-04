@@ -38,15 +38,11 @@
                 color:'#E86644'
             }
         ]
-        Project.MoveToPoint = 0;
-        Project.StopPoint = 1;
-        Project.ZoomTo = 2;
-        Project.FlyAround = 3;
-        Project.EffectSnow = 4;
-        Project.EffectMatrix = 5;
-                
+                  
+                  
         Project.playSlide = 0;
 
+        Project.cameras = {};
 		Project.slides = [];
         Project.activeSlide = null;
 		Project.playSlide = 0;
@@ -55,8 +51,17 @@
 
 		Project.activeSlide = null;
         Project.tab1Selected = 0;
-        Project.texturePath = '';
+        Project.texturePath = '';        
 
+
+        Editor.signals.objectAdded.add(function (object)
+        {
+            if (object instanceof THREE.PerspectiveCamera) {
+                Project.cameras[object.id] = object;
+                Project.tab1Selected = 2;
+            } 
+        }
+        );
 
 		var handleJSON = function(data, file, filename) {
 			if (data.metadata === undefined) { // 2.0
@@ -125,9 +130,9 @@
 					Editor.setScene(result.scene);
 				}, '');
 			} else if (data.metadata.type.toLowerCase() === 'slide') {
-                Project.slides.push(JSON.parse(data))                
+                // Project.slides.push(JSON.parse(data))                
             } else if (data.metadata.type.toLowerCase() === 'action') {
-                Project.actions.push(JSON.parse(data))                
+                // Project.actions.push(JSON.parse(data))                
             }
 		};
 
@@ -189,8 +194,72 @@
             Project.tab1Selected = 1;
         }
 
+        Project.clear = function() {
+            Editor.camera.position.set( 500, 250, 500 );
+            Editor.camera.lookAt( new THREE.Vector3() );
+
+            var objects = Editor.scene.children;
 
 
+            while ( objects.length > 0 ) {
+                Editor.removeObject( objects[ 0 ] );
+            }
+
+            Project.actions = [];
+            Project.slides = [];
+
+            Editor.geometries = {};
+            Editor.materials = {};
+            Editor.textures = {};
+            Editor.scripts = {};
+
+            Project.activeSlide = null;
+            slideCount = 0;
+
+            Editor.deselect();
+            Editor.signals.editorCleared.dispatch();            
+        }
+
+        Project.newProject = function() {
+            function NewPDiagController($scope, $mdDialog) {
+              $scope.data = 0;
+              $scope.hide = function() {
+                $mdDialog.hide();
+              };
+              $scope.cancel = function() {
+                $mdDialog.cancel();
+              };
+              $scope.clickOk = function(choice) {                
+                $mdDialog.hide(choice);
+              };
+            }
+
+            $mdDialog.show({
+                  controller: NewPDiagController,
+                  templateUrl: 'app/Aho/views/project-add-dialog.tmpl.html',
+                  parent: angular.element(document.body),
+                  clickOutsideToClose:true                    
+                }).then(function(choice){
+
+                    if ( confirm( 'Bạn có thể mất dữ liệu chưa lưu. Bạn vẫn muốn tạo dự án mới?' ) ) {
+                        Project.clear();
+                    }        
+                    // Project.clear();            
+                    var file_name = '';
+                    switch (choice) {
+                        case 0:     
+                            
+                            break;
+                        case 1:
+                            break;    
+                        case 2:                        
+                            break;
+                    default:
+                            alert('false');
+                            break;
+                    };        
+                });              
+        }
 
 		Project.addMoveTo = function(camPos) {};
 
@@ -202,12 +271,14 @@
             if (l>0) {
                 time_start = time_end = Project.slides[l-1].time_end;
             }
-			Project.slides.push(
-				new Slide({					
-					sname: 'Trình diễn ' + slideCount,
+            newSlide = new Slide({                 
+                    sname: 'Trình diễn ' + slideCount,
                     time_start:time_start,
                     time_end:time_end
-				}));
+            });
+			// Project.slides[newSlide.uuid] = newSlide;
+            Project.slides.push(newSlide) ;
+            if (Project.tab1Selected!=0) Project.tab1Selected = 0;
 		};
 
         Project.addAction = function(atype_id) {
@@ -318,6 +389,7 @@
             this.time_start = params.time_start;
             this.time_end = params.time_end;
             this.type = "slide";
+            this.camera_id = Editor.camera.uuid;
             Project.activeSlide = this;
 		};
 

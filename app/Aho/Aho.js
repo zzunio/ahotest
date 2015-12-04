@@ -18,12 +18,14 @@
         .icon('save', 'assets/save4.svg', 16)
         .icon('open', 'assets/open2.svg', 16)
         .icon('magic', 'assets/magic3.svg', 16)
+        .icon('cam1', 'assets/camera.svg', 16)
         .icon('atype0', 'assets/move-point.svg', 16)                
         .icon('atype1', 'assets/stop-point1.svg', 16)
         .icon('atype2', 'assets/zoom5.svg', 16)
         .icon('atype3', 'assets/fly.svg', 16)                        
         .icon('atype4', 'assets/snow1.svg', 16)
         .icon('atype5', 'assets/effect-point.svg', 16)
+        
 
         ;
     });

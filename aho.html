@@ -17,7 +17,7 @@
           </md-button>
           <md-menu-content width="4">    
              <md-menu-item>
-                <md-button ng-click="zz();">  <md-icon md-menu-origin="" md-svg-icon="assets/new1.svg"></md-icon>Thêm dự án mới</md-button>     
+                <md-button ng-click="project.newProject();">  <md-icon md-menu-origin="" md-svg-icon="assets/new1.svg"></md-icon>Thêm dự án mới</md-button>     
              </md-menu-item>                  
              <md-menu-item>
                 <md-button ng-click="project.importJson();">  <md-icon md-menu-origin="" md-svg-icon="assets/open2.svg"></md-icon>Mở Dự Án Đã Có</md-button>
@@ -162,13 +162,22 @@
               </div>
 					</md-tab>
 					<md-tab label="Tài nguyên">
-
+                <md-list ng-cloak >
+                  <md-list-item class="md-1-line" ng-repeat="cam in project.cameras">
+                    <md-icon md-svg-icon="cam1"></md-icon>
+                    <p>{{ cam.name }}</p>
+                  </md-list-item>
+                </md-list>    
 					</md-tab>					
         </md-tabs>
         	</div> 	
         	<div id='a-section' flex="50" layout="column">
 				<md-tabs md-selected="selectedIndex2" md-border-bottom md-autoselect>        		        		
-					<md-tab label="Chi tiết">	   					
+					<md-tab label="Chi tiết">	   		
+          			<md-subheader class="md-primary">
+                {{project.activeSlide.sname}}
+                </md-subheader>
+
 					</md-tab>
      		</md-tabs>
         	</div> 		         		 
