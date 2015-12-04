@@ -50,6 +50,7 @@
 		Project.activeCam = Editor.camera;
 
 		Project.activeSlide = null;
+        Project.camSelected = null;
         Project.tab1Selected = 0;
         Project.texturePath = '';        
 
@@ -57,7 +58,7 @@
         Editor.signals.objectAdded.add(function (object)
         {
             if (object instanceof THREE.PerspectiveCamera) {
-                Project.cameras[object.id] = object;
+                Project.cameras[object.uuid] = object;
                 Project.tab1Selected = 2;
             } 
         }
@@ -192,6 +193,19 @@
         Project.slideClick = function(slide) {
             Project.activeSlide = slide;
             Project.tab1Selected = 1;
+
+            if (Project.activeSlide.camera_id != 0) {
+                console.log(Project.cameras);
+                console.log(Project.cameras[Project.activeSlide.camera_id]);
+
+                var cam = Project.cameras[Project.activeSlide.camera_id];
+                Editor.camera.position.copy( cam.position );
+                Editor.camera.rotation.copy( cam.rotation );
+                Editor.camera.aspect = cam.aspect;
+                Editor.camera.near = cam.near;
+                Editor.camera.far = cam.far;         
+                signals.cameraChanged.dispatch();
+            }
         }
 
         Project.clear = function() {
@@ -389,7 +403,7 @@
             this.time_start = params.time_start;
             this.time_end = params.time_end;
             this.type = "slide";
-            this.camera_id = Editor.camera.uuid;
+            this.camera_id = 0;
             Project.activeSlide = this;
 		};
 

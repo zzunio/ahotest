@@ -174,11 +174,21 @@
         	<div id='a-section' flex="50" layout="column">
 				<md-tabs md-selected="selectedIndex2" md-border-bottom md-autoselect>        		        		
 					<md-tab label="Chi tiết">	   		
-          			<md-subheader class="md-primary">
+          			<md-subheader class="md-primary" style="background-color:#B6B6B6;color:#222">
                 {{project.activeSlide.sname}}
                 </md-subheader>
-
+                 <div layout="column" layout-padding>
+                <md-input-container style="margin-right: 10px;" ng-if="project.slides.length>0">
+                  <label>Máy quay</label>
+                  <md-select ng-model="project.activeSlide.camera_id">
+                    <md-option value="0">Chưa xác định</md-option>
+                    <md-option ng-repeat="cam in project.cameras" value="{{cam.uuid}}">{{cam.name}}</md-option>
+                  </md-select>
+                </md-input-container> 
+                </div>
 					</md-tab>
+          <md-tab label="Phối cảnh">  
+          </md-tab>
      		</md-tabs>
         	</div> 		         		 
         </div>
