@@ -43,7 +43,7 @@
 
         $scope.testGLTF = function ()
         {
-            Editor.clearProject();
+            Project.clear();
             Viewport.buildGLTF(
             {
                 name : "Monster",
