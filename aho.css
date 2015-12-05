@@ -5,9 +5,6 @@
 		  margin: inherit;
 		}
 
-		.md-padding canvas{
-			height: 100%;
-		}
 		.md-toolbar-tools h1 {
 		  background: #785F48;
 		  color: #fafafa;
@@ -47,13 +44,14 @@
   -ms-user-select: none;
   /* IE 10+ */
   user-select: none;
-  /* Likely future */ }
+  /* Likely future */ 
+}
 
- md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
+/* md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
   height: auto;
   min-height: 350px;
 }
-
+*/
 
 #pname {
 	border-right: 1px solid #ccc;
@@ -65,4 +63,23 @@
 	margin: 10px;
 	font-size: 12px;
 	min-width: 150px;
+	height: 150px;;
+}
+
+canvas {
+	margin: 0;
+	padding: 0;
+}
+
+#main-container {
+	background: #3A3A3A;
+}
+
+#info-panel {
+	position: absolute;
+	left: 10px;
+	bottom: 2px;
+	color: #ddd;
+	background: #3A3A3A;
+	line-height: 35px;
 }

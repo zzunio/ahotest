@@ -113,6 +113,8 @@
         angular.element(document).ready(function ()
         {
             var renderer = new THREE.WebGLRenderer();
+            Viewport.vw = $('#main-container').width()-1;
+            Viewport.vh = $('#main-container').height()-37;
             Editor.signals.rendererChanged.dispatch(renderer);
             $scope.addBlankProject();
             Viewport.animate();

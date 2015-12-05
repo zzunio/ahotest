@@ -17,8 +17,11 @@
         var mouse = new THREE.Vector2();
         // sceneHelpers = Editor.sceneHelpers;
         // var container = angular.element('#main-container');
-        var container = document.getElementById('main-container');
+        var container = document.getElementById('my-canvas');
         var clearColor = 0x474747;
+
+        Viewport.vh = 0; // canvas height
+        Viewport.vw = 0; // canvas width
 
         Viewport.objects = [];
         Viewport.transformControls = new THREE.TransformControls(camera, container);
@@ -422,24 +425,20 @@
 
         signals.rendererChanged.add(function (newRenderer)
         {
-
             if (renderer !== null)
             {
                 container.removeChild(renderer.domElement);
             }
-
             renderer = newRenderer;
             renderer.autoClear = false;
             renderer.autoUpdateScene = false;
             renderer.setClearColor(clearColor);
             renderer.setPixelRatio(window.devicePixelRatio);
-            camera.aspect = (container.offsetWidth) / (container.offsetHeight);
+            camera.aspect = (Viewport.vw) / (Viewport.vh);
             camera.updateProjectionMatrix();
-            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setSize(Viewport.vw, Viewport.vh);            
             container.appendChild(renderer.domElement);
-
             Viewport.render();
-
         }
         );
 
@@ -568,20 +567,6 @@
 
         signals.transformModeChanged.add( function ( mode ) {
             Viewport.transformControls.setMode( mode );
-        } );
-
-        signals.rendererChanged.add( function ( newRenderer ) {
-            if ( renderer !== null ) {
-                container.removeChild( renderer.domElement );
-            }
-            renderer = newRenderer;
-            renderer.autoClear = false;
-            renderer.autoUpdateScene = false;
-            renderer.setClearColor( clearColor );
-            renderer.setPixelRatio( window.devicePixelRatio );
-            renderer.setSize( container.offsetWidth, container.offsetHeight );
-            container.appendChild( renderer.domElement );
-            Viewport.render();
         } );
 
         signals.cameraChanged.add( function () {

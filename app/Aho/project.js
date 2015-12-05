@@ -195,9 +195,6 @@
             Project.tab1Selected = 1;
 
             if (Project.activeSlide.camera_id != 0) {
-                console.log(Project.cameras);
-                console.log(Project.cameras[Project.activeSlide.camera_id]);
-
                 var cam = Project.cameras[Project.activeSlide.camera_id];
                 Editor.camera.position.copy( cam.position );
                 Editor.camera.rotation.copy( cam.rotation );
