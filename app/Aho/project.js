@@ -56,6 +56,8 @@
         Project.tab2Selected = 0;
         Project.texturePath = '';        
 
+        Project.botText =  "Bạn chưa chọn đối tượng nào!";
+
 
         Editor.signals.objectAdded.add(function (object)
         {
@@ -351,6 +353,27 @@
 
         }
 
+        Project.getObjInfo = function(object) {
+
+            if (object!=null) {
+                Project.botText = 'Đối tượng chọn['+object.name+']:';
+
+                if (object instanceof THREE.PerspectiveCamera) {
+                    Project.botText+= ',X= ' +object.position.x ;
+                    Project.botText+= ',Y= ' +object.position.y ;
+                    Project.botText+= ',Z= ' +object.position.z ;                    
+                    Project.botText+= ',Near= ' +object.near ;                    
+                    Project.botText+= ',Far= ' +object.far ;                    
+                }
+            } else {
+                Project.botText = "Bạn chưa chọn đối tượng nào!"
+            }
+            console.log(Project.botText);            
+        }
+        Editor.signals.objectSelected.add(function (object) {
+            Project.getObjInfo(object);
+        });
+
 		Project.toJSON = function() {
 			return {
 				camera: Project.activeCam.toJSON(),
@@ -414,6 +437,9 @@
             Project.activeSlide = this;
 		};
 
+        Slide.play = function() {
+
+        }        
 
 
 		Action = function(atype_id, start_time, duration, adata) {
@@ -427,7 +453,8 @@
                 this.id_slide = Project.activeSlide.uuid;            
 		};
 
-		Action.prototype.play = function() {
+		Action.prototype.play = function(t) {
+            
 			if (this.running)
 				return;
 

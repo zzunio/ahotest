@@ -21,15 +21,6 @@
             showGrid : true
         }
 
-        $scope.slides = [
-            {
-                id : 1,
-                name : 'Slide 1'
-            }
-        ];
-
-        $scope.activeSlide = $scope.slides[0];
-
         $scope.playClick = function ()
         {
             Editor.playStatus = 3 - Editor.playStatus;
@@ -58,6 +49,11 @@
                 addGround : true
             }
             );
+        }
+
+
+        $scope.testAnimation1 = function() {
+            Viewport.testAnimation1();
         }
 
         $scope.ss1 = function ()

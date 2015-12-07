@@ -17,6 +17,9 @@
 
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
+
+        var mixers = [];
+        var clock = new THREE.Clock();       
         // sceneHelpers = Editor.sceneHelpers;
         // var container = angular.element('#main-container');
         var container = document.getElementById('my-canvas');
@@ -79,8 +82,15 @@
         {
             requestAnimationFrame(Viewport.animate);
             Viewport.runSlide();
+            var delta = clock.getDelta();
+
+            for ( var i = 0; i < mixers.length; i ++ ) {
+                mixers[ i ].update( delta );
+            }            
+
             Viewport.render();
             Viewport.render2();
+
         };
 
         Viewport.render2 = function () { 
@@ -297,8 +307,8 @@
                 scene.add(ambient);
 
                 var directionalLight = new THREE.DirectionalLight(0xdddddd);
-                directionalLight.position.set(0, -1, 1).normalize();
-                scene.add(directionalLight);
+                directionalLight.position.set(0, -1, 1).normalize();                
+                Editor.addObject(directionalLight);
 
                 spot1 = new THREE.SpotLight(0xffffff, 1);
                 spot1.position.set(-100, 200, 100);
@@ -313,14 +323,14 @@
                     spot1.shadowBias = 0.0001;
                     spot1.shadowMapWidth = 2048;
                     spot1.shadowMapHeight = 2048;
-                }
-                scene.add(spot1);
+                }                
+                Editor.addObject(spot1);
             }
-            if (sceneInfo.shadows)
-            {
-                renderer.shadowMap.enabled = true;
-                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            }
+            // if (sceneInfo.shadows)
+            // {
+            //     renderer.shadowMap.enabled = true;
+            //     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            // }
 
             loader = new THREE.glTFLoader;
 
@@ -420,8 +430,8 @@
                         animation.play();
                     }
                 }
-
-                scene.add(object);
+                
+                Editor.addObject(object);
                 signals.sceneGraphChanged.dispatch();
 
                 // function switchCamera(index) {
@@ -466,6 +476,33 @@
 
             }
             );
+        }
+
+        Viewport.testAnimation1 = function() {
+                var loader = new THREE.JSONLoader();
+                loader.load( "assets/animated/flamingo.js", function( geometry ) {
+
+                    var material = new THREE.MeshPhongMaterial( {
+                        color: 0xffffff,
+                        morphTargets: true,
+                        vertexColors: THREE.FaceColors,
+                        shading: THREE.FlatShading
+                    } );
+                    var mesh = new THREE.Mesh( geometry, material );
+
+                    mesh.position.x = - 150;
+                    mesh.position.y = 150;
+                    mesh.scale.set( 1.5, 1.5, 1.5 );
+
+                    // scene.add( mesh );
+                    Editor.addObject( mesh );
+
+                    var mixer = new THREE.AnimationMixer( mesh );
+                    mixer.addAction( new THREE.AnimationAction( geometry.animations[ 0 ] ).warpToDuration( 1 ) );
+
+                    mixers.push( mixer );
+
+                } );      
         }
 
         signals.rendererChanged.add(function (newRenderer)
@@ -574,7 +611,7 @@
         );
 
         signals.objectSelected.add(function (object)
-        {
+        {            
             selectionBox.visible = false;
             Viewport.transformControls.detach();
             if (object !== null)

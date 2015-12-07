@@ -69,7 +69,6 @@
 
         };
 
-        Editor.selected = null;
         Editor.playStatus = 1;
         Editor.camera = new THREE.PerspectiveCamera(70, 1, 1, 100000);
         Editor.camera.position.set(500, 250, 500);
@@ -234,6 +233,7 @@
 
         Editor.select = function (object)
         {
+
 
             if (Editor.selected === object)
                 return;

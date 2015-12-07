@@ -87,6 +87,9 @@
              </md-menu-item>                         
             <md-menu-item>
               <md-button ng-click="testGLTF()">  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Test GLTF</md-button>
+             </md-menu-item>  
+            <md-menu-item>
+              <md-button ng-click="testAnimation1()">  <md-icon md-menu-origin="" md-svg-icon="assets/project.svg"></md-icon>Test Animation 1</md-button>
              </md-menu-item>              
           </md-menu-content>
         </md-menu>
@@ -177,14 +180,14 @@
           			<md-subheader class="md-primary" style="background-color:#B6B6B6;color:#222">
                 {{project.activeSlide.sname}}
                 </md-subheader>
-                 <div layout="column" layout-padding>
-                <md-input-container style="margin-right: 10px;" ng-if="project.slides.length>0">
-                  <label>Máy quay</label>
-                  <md-select ng-model="project.activeSlide.camera_id">
-                    <md-option value="0">Chưa xác định</md-option>
-                    <md-option ng-repeat="cam in project.cameras" value="{{cam.uuid}}">{{cam.name}}</md-option>
-                  </md-select>
-                </md-input-container> 
+                 <div layout="column" layout-padding ng-if="project.slides.length>0">
+                    <md-input-container style="margin-right: 10px;" ng-if="project.slides.length>0">
+                      <label>Máy quay</label>
+                      <md-select ng-model="project.activeSlide.camera_id">
+                        <md-option value="0">Chưa xác định</md-option>
+                        <md-option ng-repeat="cam in project.cameras" value="{{cam.uuid}}">{{cam.name}}</md-option>
+                      </md-select>
+                    </md-input-container> 
                 </div>
 					</md-tab>
           <md-tab label="Phối cảnh">  
@@ -198,7 +201,7 @@
             <md-content layout="column" flex id="main-container">
               <div id="my-canvas"></div>
               <div id="info-panel">
-                  Viewport Control :
+                  {{project.botText}}
               </div>
             </md-content>
         </div>
@@ -210,12 +213,14 @@
   <script src="lib/three.min.js"></script>
 	<!--  <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script> -->
 	
+  <script src="lib/examples/js/libs/stats.min.js"></script> 
+  <script src="lib/examples/js/libs/tween.min.js"></script> 
+
 	<script src="lib/examples/js/controls/OrbitControls.js"></script>
   <script src="lib/examples/js/controls/TransformControls.js"></script>
 	<script src="lib/examples/js/controls/EditorControls.js"></script>
 	<script src="lib/examples/js/controls/DragControls.js"></script>
 	<script src="lib/examples/js/renderers/Projector.js"></script>
-	<script src="lib/examples/js/libs/stats.min.js"></script>	
 	<script src="lib/examples/js/loaders/ColladaLoader.js"></script>
 	<script src="lib/examples/js/cameras/CombinedCamera.js"></script>
 
