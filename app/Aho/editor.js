@@ -37,6 +37,9 @@
             sceneGraphChanged : new SIGNALS.Signal(),
 
             cameraChanged : new SIGNALS.Signal(),
+            cameraSelected : new SIGNALS.Signal(),
+            cameraAdded : new SIGNALS.Signal(),
+            camObjMove : new SIGNALS.Signal(),
 
             geometryChanged : new SIGNALS.Signal(),
 
@@ -89,6 +92,7 @@
         Editor.helpers = {};
         Editor.grid = new THREE.GridHelper(500, 25);
 
+        Editor.camObjSelected = null;
         // Editor.cameras = {};
 
         // Editor.renderer = new THREE.WebGLRenderer();

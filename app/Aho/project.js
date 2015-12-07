@@ -50,8 +50,10 @@
 		Project.activeCam = Editor.camera;
 
 		Project.activeSlide = null;
-        Project.camSelected = null;
+        Project.camSelected = null; // dropdown
+        Project.camObjSelected = null; //camera tab
         Project.tab1Selected = 0;
+        Project.tab2Selected = 0;
         Project.texturePath = '';        
 
 
@@ -201,8 +203,16 @@
                 Editor.camera.aspect = cam.aspect;
                 Editor.camera.near = cam.near;
                 Editor.camera.far = cam.far;         
-                signals.cameraChanged.dispatch();
+                Editor.signals.cameraChanged.dispatch();
             }
+        }
+
+        Project.cameraClick = function(cam) {
+            Project.activeCam = cam;
+            // Editor.camObjSelected = cam;
+            Project.tab2Selected = 1;
+            Editor.select(cam);   
+            Editor.signals.cameraSelected.dispatch(cam);            
         }
 
         Project.clear = function() {

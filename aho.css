@@ -79,7 +79,13 @@ canvas {
 	position: absolute;
 	left: 10px;
 	bottom: 2px;
-	color: #ddd;
+	color: #797979;
 	background: #3A3A3A;
 	line-height: 35px;
+}
+
+#cam-preview {
+	/*background: #616161;*/
+	margin: 8px;
+	height: 180px;
 }

@@ -5,9 +5,11 @@
         var Viewport = {};
         var signals = Editor.signals;
         var camera = Editor.camera;
+        var camera2 = null;
         var scene = Editor.scene;
         var sceneHelpers = Editor.sceneHelpers;
         var renderer = null;
+        var renderer2 = null;
 
         var onDownPosition = new THREE.Vector2();
         var onUpPosition = new THREE.Vector2();
@@ -78,7 +80,15 @@
             requestAnimationFrame(Viewport.animate);
             Viewport.runSlide();
             Viewport.render();
+            Viewport.render2();
         };
+
+        Viewport.render2 = function () { 
+            // render preview camera
+            renderer2.clear();
+            renderer2.render(scene,camera2);
+            renderer2.render(sceneHelpers, camera2);
+        }
 
         Viewport.render = function ()
         {
@@ -109,6 +119,29 @@
                 }
             }
             );
+        }
+
+        Viewport.initCamPreview = function() {
+            ww = $('#cam-preview').width();
+            hh = $('#cam-preview').height(); 
+            camera2 = new THREE.PerspectiveCamera(70, ww / hh, 1, 100000);
+            camera2.position.copy( camera.position );
+            camera2.rotation.copy( camera.rotation );
+            camera2.near = camera.near;
+            camera2.far = camera.far;              
+            renderer2 = new THREE.WebGLRenderer();
+            renderer2.autoClear = false;
+            // renderer2.autoUpdateScene = true;
+            renderer2.setClearColor(0x9C9C9C);
+            renderer2.setPixelRatio(window.devicePixelRatio);
+            camera2.aspect = ww / hh;
+            camera2.updateProjectionMatrix();
+            renderer2.setSize(ww, hh);            
+            var cam_preview_dom = document.getElementById('cam-preview');
+            console.log(cam_preview_dom);
+            cam_preview_dom.appendChild(renderer2.domElement);
+            Viewport.render2();
+            // Viewport.render();
         }
 
         function getIntersects(point, objects)
@@ -163,7 +196,16 @@
             var array = getMousePosition(container, event.clientX, event.clientY);
             onDownPosition.fromArray(array);
             document.addEventListener('mouseup', onMouseUp, false);
+            document.addEventListener( 'mousemove', onMouseMove, false );
         };
+
+        function onMouseMove (event) {
+            // if (Editor.camObjSelected!=null){
+            //     if (Editor.selected.uuid==Editor.camObjSelected.uuid) {
+            //         signals.camObjMove.dispatch();
+            //     }      
+            // }            
+        }
 
         function onMouseUp(event)
         {
@@ -172,6 +214,8 @@
             onUpPosition.fromArray(array);
             handleClick();
             document.removeEventListener('mouseup', onMouseUp, false);
+            document.removeEventListener( 'mousemove', onMouseMove, false );
+
         };
 
         function onDoubleClick( event ) {
@@ -187,6 +231,7 @@
 
         container.addEventListener( 'mousedown', onMouseDown, false );
         container.addEventListener( 'dblclick', onDoubleClick, false );        
+                
 
         // TransformControls
         Viewport.transformControls.addEventListener('change', function ()
@@ -445,6 +490,7 @@
         signals.sceneGraphChanged.add(function ()
         {
             Viewport.render();
+            Viewport.render2();
         }
         );
 
@@ -452,7 +498,33 @@
         {
             Viewport.render();
         }
+        );        
+
+        signals.cameraSelected.add(function (cam)
+        {
+            Editor.camObjSelected = cam;
+            camera2.position.copy( cam.position );
+            camera2.rotation.copy( cam.rotation );
+            // camera2.aspect = cam.aspect;
+            camera2.near = cam.near;
+            camera2.far = cam.far;  
+            camera2.updateProjectionMatrix();
+            Viewport.render2();
+        }
         );
+
+        signals.camObjMove.add(function ()
+        {
+            console.log(Editor.selected.position);
+            camera2.position.copy( Editor.camObjSelected.position );
+            camera2.rotation.copy( Editor.camObjSelected.rotation );
+            // camera2.aspect = cam.aspect;
+            camera2.near = Editor.camObjSelected.near;
+            camera2.far = Editor.camObjSelected.far;  
+            camera2.updateProjectionMatrix();
+            Viewport.render2();
+        }
+        );        
 
         signals.helperAdded.add(function (object)
         {
@@ -532,12 +604,18 @@
             if (object instanceof THREE.PerspectiveCamera)
             {
                 object.updateProjectionMatrix();
+                if (Editor.camObjSelected!=null) {
+                 if (object.uuid == Editor.camObjSelected.uuid) {
+                    signals.cameraSelected.dispatch(Editor.camObjSelected);
+                }                   
+                }
             }
             if (Editor.helpers[object.id] !== undefined)
             {
                 Editor.helpers[object.id].update();
             }
-            Viewport.render();
+            Viewport.render(); 
+            
         }
         );
 
@@ -567,10 +645,6 @@
 
         signals.transformModeChanged.add( function ( mode ) {
             Viewport.transformControls.setMode( mode );
-        } );
-
-        signals.cameraChanged.add( function () {
-            Viewport.render();
         } );
 
         signals.geometryChanged.add( function ( geometry ) {

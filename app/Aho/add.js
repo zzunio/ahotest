@@ -26,14 +26,16 @@
 
 
         Add.addCamera = function() {
-            var camera = new THREE.PerspectiveCamera( 50, 1, 1, 1000 );
+            var camera = new THREE.PerspectiveCamera( 50, 1, 1, 2000 );
             camera.name = 'Máy quay ' + ( ++ cameraCount );
             // camera.position.set(500, 250, 500);
             camera.position.copy(Editor.camera.position);
             // camera.lookAt(Editor.grid);
             camera.lookAt(new THREE.Vector3());
+            // Editor.camObjSelected = camera;
             Editor.addObject( camera );
             Editor.select( camera );
+            Editor.signals.cameraSelected.dispatch(camera);       
         }
 
 

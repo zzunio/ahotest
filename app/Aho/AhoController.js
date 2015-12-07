@@ -116,6 +116,7 @@
             Viewport.vw = $('#main-container').width()-1;
             Viewport.vh = $('#main-container').height()-37;
             Editor.signals.rendererChanged.dispatch(renderer);
+            Viewport.initCamPreview();
             $scope.addBlankProject();
             Viewport.animate();
         }

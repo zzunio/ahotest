@@ -163,7 +163,7 @@
 					</md-tab>
 					<md-tab label="Tài nguyên">
                 <md-list ng-cloak >
-                  <md-list-item class="md-1-line" ng-repeat="cam in project.cameras">
+                  <md-list-item class="md-1-line" ng-repeat="cam in project.cameras" ng-click="project.cameraClick(cam)">
                     <md-icon md-svg-icon="cam1"></md-icon>
                     <p>{{ cam.name }}</p>
                   </md-list-item>
@@ -172,7 +172,7 @@
         </md-tabs>
         	</div> 	
         	<div id='a-section' flex="50" layout="column">
-				<md-tabs md-selected="selectedIndex2" md-border-bottom md-autoselect>        		        		
+				<md-tabs md-selected="project.tab2Selected" md-border-bottom md-autoselect>        		        		
 					<md-tab label="Chi tiết">	   		
           			<md-subheader class="md-primary" style="background-color:#B6B6B6;color:#222">
                 {{project.activeSlide.sname}}
@@ -188,6 +188,8 @@
                 </div>
 					</md-tab>
           <md-tab label="Phối cảnh">  
+            <div id="cam-preview">
+            </div>
           </md-tab>
      		</md-tabs>
         	</div> 		         		 
