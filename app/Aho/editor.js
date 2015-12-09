@@ -153,7 +153,7 @@
                 var zhelper;
                 if ( object instanceof THREE.Camera ) {
                     helper = new THREE.CameraHelper( object,10 );  
-                    var geometry2 = new THREE.BoxGeometry( 20, 20, 20 );
+                    var geometry2 = new THREE.BoxGeometry( 5, 5, 5 );
                     var material2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, visible: true } );                    
                     zhelper = new THREE.Mesh( geometry2, material2 );
                     zhelper.position.copy(object.position); 

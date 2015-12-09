@@ -45,6 +45,7 @@
         Project.cameras = {};
 		Project.slides = [];
         Project.activeSlide = null;
+        Project.camSlide = null;// camera duoc gan voi slide hien tai
 		Project.playSlide = 0;
 		Project.actions = [];
 		Project.activeCam = Editor.camera;
@@ -208,6 +209,7 @@
                 Editor.camera.aspect = cam.aspect;
                 Editor.camera.near = cam.near;
                 Editor.camera.far = cam.far;         
+                Editor.camSlide = cam;
                 Editor.signals.cameraChanged.dispatch();
             }
         }
@@ -330,9 +332,11 @@
             }
             switch (atype_id) {
                 case 0:     
-                    adata = Project.activeCam.position;
+                    adata.position = Project.activeCam.position;
                     break;
-                case 1:    
+                case 1:   
+
+                    break;
                 case 2:
                 case 3: 
                 break;
@@ -445,14 +449,26 @@
 
 
 		Action = function(atype_id, start_time, duration, adata) {
+            this.uuid = THREE.Math.generateUUID();
 			this.atype = Project.atypes[atype_id]; // move to point, zoom to point, run around object,
 			this.duration = duration;
 			this.loop = false;
 			this.start_time = start_time;
             this.adata = adata;
             this.type = 'action';
+
+
+            var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+            var material = new THREE.MeshBasicMaterial( { color: this.atype.color, visible: true } );                    
+            var zhelper = new THREE.Mesh( geometry, material );
+            zhelper.position.copy(adata.position); 
+            Editor.sceneHelpers.add( zhelper );
+            Editor.zhelpers[this.uuid] = zhelper;
+
             if (Project.activeSlide!=null)
-                this.id_slide = Project.activeSlide.uuid;            
+                this.id_slide = Project.activeSlide.uuid;        
+
+            // Editor.signals.sceneGraphChanged.dispatch();    
 		};
 
 		Action.prototype.play = function(t) {

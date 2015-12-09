@@ -254,9 +254,11 @@
                 {
                     Editor.helpers[object.uuid].update();
                     signals.camObjMove.dispatch();
-                    if (Editor.selected.uuid == Editor.virtualCam.uuid) {
-                        signals.vcamMove.dispatch();
-                    }                   
+                    if (Editor.virtualCam!=null){
+                       if (Editor.selected.uuid == Editor.virtualCam.uuid) {
+                            signals.vcamMove.dispatch();
+                        }
+                    }
                 }
             }
             Viewport.render();
