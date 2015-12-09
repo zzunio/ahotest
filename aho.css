@@ -89,3 +89,11 @@ canvas {
 	margin: 8px;
 	height: 180px;
 }
+
+.list-selected {
+	font-weight: bold;
+	color: #785F48;
+}
+.list-normal {	
+	color: #999;
+}

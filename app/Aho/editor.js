@@ -88,6 +88,7 @@
         Editor.scripts = {};
 
 
+        Editor.notClick = false;
         Editor.selected = null;
         Editor.helpers = {};
         Editor.zhelpers = {}; // cac doi tuong danh dau vi tri de nhan biet khi hide helper
@@ -153,49 +154,35 @@
                 var zhelper;
                 if ( object instanceof THREE.Camera ) {
                     helper = new THREE.CameraHelper( object,10 );  
-                    var geometry2 = new THREE.BoxGeometry( 5, 5, 5 );
-                    var material2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, visible: true } );                    
-                    zhelper = new THREE.Mesh( geometry2, material2 );
-                    zhelper.position.copy(object.position); 
-
+                    if (object.name[0]!='V') {
+                        var geometry2 = new THREE.BoxGeometry( 8, 8, 8 );
+                        var material2 = new THREE.MeshBasicMaterial( { color: 0x9165D6, visible: true } );                    
+                        zhelper = new THREE.Mesh( geometry2, material2 );
+                        zhelper.position.copy(object.position);         
+                        Editor.zhelpers[object.uuid] = zhelper;                
+                        Editor.sceneHelpers.add( zhelper );
+                    }
                 } else if ( object instanceof THREE.PointLight ) {
-
                     helper = new THREE.PointLightHelper( object, 10 );
-
                 } else if ( object instanceof THREE.DirectionalLight ) {
-
                     helper = new THREE.DirectionalLightHelper( object, 20 );
-
                 } else if ( object instanceof THREE.SpotLight ) {
-
                     helper = new THREE.SpotLightHelper( object, 10 );
-
                 } else if ( object instanceof THREE.HemisphereLight ) {
-
                     helper = new THREE.HemisphereLightHelper( object, 10 );
-
                 } else if ( object instanceof THREE.SkinnedMesh ) {
-
                     helper = new THREE.SkeletonHelper( object );
-
                 } else {
-
                     // no helper for this object type
                     return;
-
                 }
                 var picker = new THREE.Mesh( geometry, material );
                 picker.name = 'picker';
                 picker.userData.object = object;
                 helper.add( picker );
-
-                Editor.sceneHelpers.add( helper );
-                Editor.sceneHelpers.add( zhelper );
-                Editor.helpers[ object.uuid ] = helper;
-                Editor.zhelpers[object.uuid] = zhelper;
+                Editor.sceneHelpers.add( helper );                
+                Editor.helpers[ object.uuid ] = helper;                
                 Editor.signals.helperAdded.dispatch( helper );
-
-
             };
 
         }();   
@@ -250,8 +237,12 @@
             } else {
                 if (Editor.selected instanceof THREE.Camera) {
                     Editor.helpers[Editor.selected.uuid].visible = false;
-                    Editor.zhelpers[Editor.selected.uuid].position.copy(Editor.selected.position);
-                    Editor.zhelpers[Editor.selected.uuid].visible = true;
+                    // if (Editor.selected.name[0]!='V') {
+                        Editor.zhelpers[Editor.selected.uuid].position.copy(Editor.selected.position);
+                        Editor.zhelpers[Editor.selected.uuid].visible = true;                        
+                    // } else {
+                        // Editor.zhelpers[Editor.selected.uuid].position.copy(Editor.selected.position);
+                    // }
                 }
             }
 
@@ -264,7 +255,10 @@
             Editor.selected = object;
             if (Editor.selected instanceof THREE.Camera) {
                 Editor.helpers[Editor.selected.uuid].visible = true;
-                Editor.zhelpers[Editor.selected.uuid].visible = false;
+                // if (Editor.selected.name[0]!='V') {
+                    Editor.zhelpers[Editor.selected.uuid].visible = false;
+                // }
+                Editor.signals.cameraSelected.dispatch(object);
             }
 
             Editor.signals.objectSelected.dispatch(object);

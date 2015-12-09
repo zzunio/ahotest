@@ -35,7 +35,7 @@
         Viewport.controls.addEventListener('change', function ()
         {
             Viewport.transformControls.update();
-            signals.cameraChanged.dispatch(camera);
+            // signals.cameraChanged.dispatch(camera);
         }
         );
 
@@ -75,6 +75,7 @@
                 // Viewport.mesh.rotation.x += 0.005;
                 // Viewport.mesh.rotation.y += 0.01;
                 THREE.glTFAnimator.update();
+                TWEEN.update();
             }
         };
 
@@ -86,8 +87,7 @@
 
             for ( var i = 0; i < mixers.length; i ++ ) {
                 mixers[ i ].update( delta );
-            }            
-
+            }                        
             Viewport.render();
             Viewport.render2();
 
@@ -202,6 +202,7 @@
 
         function onMouseDown(event)
         {
+            if (Editor.notClick) return;
             event.preventDefault();
             var array = getMousePosition(container, event.clientX, event.clientY);
             onDownPosition.fromArray(array);
@@ -245,7 +246,8 @@
 
         // TransformControls
         Viewport.transformControls.addEventListener('change', function ()
-        {
+        {            
+            // if (Editor.notClick) return;
             var object = Viewport.transformControls.object;
             if (object !== undefined)
             {
@@ -552,19 +554,22 @@
             camera2.near = cam.near;
             camera2.far = cam.far;  
             camera2.updateProjectionMatrix();
+            Viewport.transformControls.update();
             Viewport.render2();
         }
         );
 
         signals.camObjMove.add(function ()
         {   
-            camera2.position.copy( Editor.camObjSelected.position );
-            camera2.rotation.copy( Editor.camObjSelected.rotation );
-            // camera2.aspect = cam.aspect;
-            camera2.near = Editor.camObjSelected.near;
-            camera2.far = Editor.camObjSelected.far;  
-            camera2.updateProjectionMatrix();
-            Viewport.render2();
+            if (Editor.camObjSelected!=null) {
+                camera2.position.copy( Editor.camObjSelected.position );
+                camera2.rotation.copy( Editor.camObjSelected.rotation );
+                // camera2.aspect = cam.aspect;
+                camera2.near = Editor.camObjSelected.near;
+                camera2.far = Editor.camObjSelected.far;              
+                camera2.updateProjectionMatrix();
+                Viewport.render2();                
+            }
         }
         );        
 
@@ -617,6 +622,8 @@
 
         signals.objectSelected.add(function (object)
         {            
+            if (Editor.notClick) return;
+
             selectionBox.visible = false;
             Viewport.transformControls.detach();
             if (object !== null)

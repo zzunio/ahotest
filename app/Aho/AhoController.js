@@ -26,10 +26,13 @@
             Editor.playStatus = 3 - Editor.playStatus;
             $scope.playStatus = Editor.playStatus;
             if (Editor.playStatus == 1)
-            {}
+            {
 
+            }
             else
-            {}
+            {
+                Project.playAll();
+            }
         }
 
         $scope.testGLTF = function ()

@@ -35,8 +35,8 @@
             // Editor.camObjSelected = camera;
             Editor.addObject( camera );
             Editor.select( camera );
-            Editor.signals.cameraSelected.dispatch(camera);       
         }
+
 
 
         Add.addAmbientLight = function() {

@@ -2,6 +2,7 @@
 	angular.module('Aho').factory('Project', function($http, $q, $mdDialog, Editor) {
 		var slideCount = 0;
 		var Project = {};
+        var vcamCount = 0;
 
 		Project.pname = 'Dự án trình diễn 3D test 1';
 
@@ -44,7 +45,6 @@
 
         Project.cameras = {};
 		Project.slides = [];
-        Project.activeSlide = null;
         Project.camSlide = null;// camera duoc gan voi slide hien tai
 		Project.playSlide = 0;
 		Project.actions = [];
@@ -62,8 +62,10 @@
         Editor.signals.objectAdded.add(function (object)
         {
             if (object instanceof THREE.PerspectiveCamera) {
-                Project.cameras[object.uuid] = object;
-                Project.tab1Selected = 2;
+                if (object.name[0]!='V') { // neu ko phai VCam, cho vao danh sach camera cua slide
+                    Project.cameras[object.uuid] = object;
+                    Project.tab1Selected = 2;
+                }
             } 
         }
         );
@@ -71,6 +73,16 @@
         Editor.signals.vcamMove.add(function() {
             var lookAt = Project.activeCam.translateZ();
         });
+
+        Editor.signals.objectSelected.add(function (object) {
+            Project.getObjInfo(object);
+        });        
+
+        Editor.signals.cameraSelected.add(function (cam)
+        {
+            Project.tab2Selected = 1;
+        }
+        );        
 
 		var handleJSON = function(data, file, filename) {
 			if (data.metadata === undefined) { // 2.0
@@ -198,9 +210,18 @@
 			};
 		};
 
+        Project.playAll = function() {
+            for ( var s = 0; s < Project.slides.length; s ++ ) {
+                Project.slides[s].play();
+            }
+        }
+        Project.stopAll = function() {
+            TWEEN.removeAll();
+        }
+
         Project.slideClick = function(slide) {
-            Project.activeSlide = slide;
-            Project.tab1Selected = 1;
+            Project.activeSlide = slide;            
+            // Project.tab1Selected = 1;
 
             if (Project.activeSlide.camera_id != 0) {
                 var cam = Project.cameras[Project.activeSlide.camera_id];
@@ -211,6 +232,11 @@
                 Editor.camera.far = cam.far;         
                 Editor.camSlide = cam;
                 Editor.signals.cameraChanged.dispatch();
+                Editor.select(cam);
+                // Editor.signals.cameraSelected.dispatch(cam);                    
+            } 
+            if (slide.camera_id==0) {
+                Project.tab2Selected = 0;
             }
         }
 
@@ -218,7 +244,7 @@
             Project.activeCam = cam;
             Project.tab2Selected = 1;
             Editor.select(cam);   
-            Editor.signals.cameraSelected.dispatch(cam);            
+            // Editor.signals.cameraSelected.dispatch(cam);            
         }
 
         Project.clear = function() {
@@ -332,7 +358,7 @@
             }
             switch (atype_id) {
                 case 0:     
-                    adata.position = Project.activeCam.position;
+                    adata.position = Editor.camera.position;           
                     break;
                 case 1:   
 
@@ -353,6 +379,7 @@
                       clickOutsideToClose:true                    
                     }).then(function(duration,start_time){
                         Project.actions.push(new Action(atype_id,start_time,duration,adata));
+                        console.log(Project.actions);
                         Project.activeSlide.time_end += duration;
                     });                
             }
@@ -376,9 +403,7 @@
             }
             console.log(Project.botText);            
         }
-        Editor.signals.objectSelected.add(function (object) {
-            Project.getObjInfo(object);
-        });
+
 
 		Project.toJSON = function() {
 			return {
@@ -443,8 +468,25 @@
             Project.activeSlide = this;
 		};
 
-        Slide.play = function() {
-
+        Slide.prototype.play = function() {
+            var cam = Project.cameras[this.camera_id];
+            // var currentPos = {x:cam.x,y:cam.y,z:cam.z,rx:cam.rotation.x,ry:cam.rotation.y,rz:cam.rotation.z};
+            var currentPos = {x:cam.position.x,y:cam.position.y,z:cam.position.z};
+            console.log(currentPos);
+            Editor.camera.position.copy( cam.position );
+            Editor.camera.rotation.copy( cam.rotation );            
+            for(var a in Project.actions){ 
+                var aa = Project.actions[a];
+                if (aa.atype.id == 0) {
+                        new TWEEN.Tween( Editor.camera.position )
+                        .to({x: aa.adata.x, y: aa.adata.y, z: aa.adata.z}, 2000 )
+                        // .onUpdate(function() {
+                        //     console.log(this.x);
+                        // })
+                        .easing( TWEEN.Easing.Exponential.InOut )
+                        .start();
+                }
+            }
         }        
 
 
@@ -454,17 +496,25 @@
 			this.duration = duration;
 			this.loop = false;
 			this.start_time = start_time;
-            this.adata = adata;
+            this.adata = {x:adata.position.x,y:adata.position.y,z:adata.position.z};
             this.type = 'action';
-
 
             var geometry = new THREE.BoxGeometry( 5, 5, 5 );
             var material = new THREE.MeshBasicMaterial( { color: this.atype.color, visible: true } );                    
             var zhelper = new THREE.Mesh( geometry, material );
             zhelper.position.copy(adata.position); 
             Editor.sceneHelpers.add( zhelper );
-            Editor.zhelpers[this.uuid] = zhelper;
+            
+            var cam = new THREE.PerspectiveCamera( 50, 1, 1, 2000 );
+            vcamCount++;
+            cam.name = 'Vcam-'+vcamCount;
+            cam.position.copy(Editor.camera.position);
+            cam.lookAt(new THREE.Vector3());
 
+            Editor.zhelpers[cam.uuid] = zhelper;
+            Editor.addObject( cam );
+            Editor.select( cam );
+            
             if (Project.activeSlide!=null)
                 this.id_slide = Project.activeSlide.uuid;        
 

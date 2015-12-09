@@ -110,7 +110,7 @@
 	        			<md-list ng-cloak >
 		        			<md-list-item class="md-1-line" ng-repeat="item in project.slides" ng-click="project.slideClick(item)">
 		        				<md-icon md-svg-icon="assets/night.svg"></md-icon>
-		        				<p>{{ item.sname }}</p>
+		        				<p ng-class="{true:'list-selected',false:'list-normal'}[item.uuid==project.activeSlide.uuid]">{{ item.sname }}</p>
 		        			</md-list-item>
 	        			</md-list>			
                <md-button class="md-raised md-primary" ng-if="project.slides.length<1" ng-click="addSlide();"><md-icon md-svg-icon="assets/add4.svg"></md-icon> 1 trình diễn</md-button>
