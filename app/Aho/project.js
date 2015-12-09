@@ -51,7 +51,6 @@
 
 		Project.activeSlide = null;
         Project.camSelected = null; // dropdown
-        Project.camObjSelected = null; //camera tab
         Project.tab1Selected = 0;
         Project.tab2Selected = 0;
         Project.texturePath = '';        
@@ -67,6 +66,10 @@
             } 
         }
         );
+
+        Editor.signals.vcamMove.add(function() {
+            var lookAt = Project.activeCam.translateZ();
+        });
 
 		var handleJSON = function(data, file, filename) {
 			if (data.metadata === undefined) { // 2.0
@@ -211,7 +214,6 @@
 
         Project.cameraClick = function(cam) {
             Project.activeCam = cam;
-            // Editor.camObjSelected = cam;
             Project.tab2Selected = 1;
             Editor.select(cam);   
             Editor.signals.cameraSelected.dispatch(cam);            
@@ -454,7 +456,7 @@
 		};
 
 		Action.prototype.play = function(t) {
-            
+
 			if (this.running)
 				return;
 

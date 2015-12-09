@@ -250,9 +250,13 @@
             if (object !== undefined)
             {
                 selectionBox.update(object);
-                if (Editor.helpers[object.id] !== undefined)
+                if (Editor.helpers[object.uuid] !== undefined)
                 {
-                    Editor.helpers[object.id].update();
+                    Editor.helpers[object.uuid].update();
+                    signals.camObjMove.dispatch();
+                    if (Editor.selected.uuid == Editor.virtualCam.uuid) {
+                        signals.vcamMove.dispatch();
+                    }                   
                 }
             }
             Viewport.render();
@@ -551,8 +555,7 @@
         );
 
         signals.camObjMove.add(function ()
-        {
-            console.log(Editor.selected.position);
+        {   
             camera2.position.copy( Editor.camObjSelected.position );
             camera2.rotation.copy( Editor.camObjSelected.rotation );
             // camera2.aspect = cam.aspect;

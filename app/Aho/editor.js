@@ -40,6 +40,7 @@
             cameraSelected : new SIGNALS.Signal(),
             cameraAdded : new SIGNALS.Signal(),
             camObjMove : new SIGNALS.Signal(),
+            vcamMove : new SIGNALS.Signal(), // di chuyen camera ao
 
             geometryChanged : new SIGNALS.Signal(),
 
@@ -89,9 +90,11 @@
 
         Editor.selected = null;
         Editor.helpers = {};
+        Editor.zhelpers = {}; // cac doi tuong danh dau vi tri de nhan biet khi hide helper
         Editor.grid = new THREE.GridHelper(500, 25);
 
         Editor.camObjSelected = null;
+        Editor.virtualCam = null;
         // Editor.cameras = {};
 
         // Editor.renderer = new THREE.WebGLRenderer();
@@ -147,8 +150,13 @@
             return function ( object ) {
 
                 var helper;
+                var zhelper;
                 if ( object instanceof THREE.Camera ) {
-                    helper = new THREE.CameraHelper( object, 10 );                    
+                    helper = new THREE.CameraHelper( object,10 );  
+                    var geometry2 = new THREE.BoxGeometry( 20, 20, 20 );
+                    var material2 = new THREE.MeshBasicMaterial( { color: 0x00ff00, visible: true } );                    
+                    zhelper = new THREE.Mesh( geometry2, material2 );
+                    zhelper.position.copy(object.position); 
 
                 } else if ( object instanceof THREE.PointLight ) {
 
@@ -182,7 +190,9 @@
                 helper.add( picker );
 
                 Editor.sceneHelpers.add( helper );
-                Editor.helpers[ object.id ] = helper;
+                Editor.sceneHelpers.add( zhelper );
+                Editor.helpers[ object.uuid ] = helper;
+                Editor.zhelpers[object.uuid] = zhelper;
                 Editor.signals.helperAdded.dispatch( helper );
 
 
@@ -191,10 +201,10 @@
         }();   
 
         Editor.removeHelper = function ( object ) {
-            if ( Editor.helpers[ object.id ] !== undefined ) {
-                var helper = Editor.helpers[ object.id ];
+            if ( Editor.helpers[ object.uuid ] !== undefined ) {
+                var helper = Editor.helpers[ object.uuid ];
                 helper.parent.remove( helper );
-                delete Editor.helpers[ object.id ];
+                delete Editor.helpers[ object.uuid ];
                 Editor.signals.helperRemoved.dispatch( helper );
             }
         }
@@ -235,8 +245,15 @@
         {
 
 
-            if (Editor.selected === object)
+            if (Editor.selected === object) {
                 return;
+            } else {
+                if (Editor.selected instanceof THREE.Camera) {
+                    Editor.helpers[Editor.selected.uuid].visible = false;
+                    Editor.zhelpers[Editor.selected.uuid].position.copy(Editor.selected.position);
+                    Editor.zhelpers[Editor.selected.uuid].visible = true;
+                }
+            }
 
             var uuid = null;
 
@@ -245,7 +262,12 @@
                 uuid = object.uuid;
             }
             Editor.selected = object;
-            this.signals.objectSelected.dispatch(object);
+            if (Editor.selected instanceof THREE.Camera) {
+                Editor.helpers[Editor.selected.uuid].visible = true;
+                Editor.zhelpers[Editor.selected.uuid].visible = false;
+            }
+
+            Editor.signals.objectSelected.dispatch(object);
             // this.config.setKey('selected', uuid);
         };
 
