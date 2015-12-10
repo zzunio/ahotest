@@ -27,7 +27,7 @@
             $scope.playStatus = Editor.playStatus;
             if (Editor.playStatus == 1)
             {
-
+                
             }
             else
             {

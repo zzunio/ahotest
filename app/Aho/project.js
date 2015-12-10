@@ -217,6 +217,7 @@
         }
         Project.stopAll = function() {
             TWEEN.removeAll();
+            Editor.playStatus = 1;
         }
 
         Project.slideClick = function(slide) {
@@ -358,13 +359,15 @@
             }
             switch (atype_id) {
                 case 0:     
-                    adata.position = Editor.camera.position;           
+                    adata.position = Editor.camera.position;         
+                    adata.rotation = Editor.camera.rotation;  
                     break;
                 case 1:   
 
                     break;
                 case 2:
-                case 3: 
+                    break;
+                case 3: adata.position = Editor.camera.position;         
                 break;
             default:
                     alert('unknown action type');
@@ -470,23 +473,51 @@
 
         Slide.prototype.play = function() {
             var cam = Project.cameras[this.camera_id];
-            // var currentPos = {x:cam.x,y:cam.y,z:cam.z,rx:cam.rotation.x,ry:cam.rotation.y,rz:cam.rotation.z};
-            var currentPos = {x:cam.position.x,y:cam.position.y,z:cam.position.z};
-            console.log(currentPos);
+            var t = [];
+            var currentPos = {x:cam.position.x,y:cam.position.y,z:cam.position.z,rx:cam.rotation.x,ry:cam.rotation.y,rz:cam.rotation.z};
+            // var currentPos = {x:cam.position.x,y:cam.position.y,z:cam.position.z};
             Editor.camera.position.copy( cam.position );
             Editor.camera.rotation.copy( cam.rotation );            
             for(var a in Project.actions){ 
                 var aa = Project.actions[a];
                 if (aa.atype.id == 0) {
-                        new TWEEN.Tween( Editor.camera.position )
-                        .to({x: aa.adata.x, y: aa.adata.y, z: aa.adata.z}, 2000 )
-                        // .onUpdate(function() {
-                        //     console.log(this.x);
-                        // })
+                        var pp = angular.copy(currentPos);
+                        currentPos = angular.copy(aa.adata);
+                        t.push(new TWEEN.Tween(pp)
+                        .to({x: aa.adata.x, y: aa.adata.y, z: aa.adata.z, rx:aa.adata.rx, ry:aa.adata.ry, rz:aa.adata.rz}, 2000 )
+                        .onUpdate(function() {
+                            Editor.camera.position.x = this.x;
+                            Editor.camera.position.y = this.y;
+                            Editor.camera.position.z = this.z;
+                            Editor.camera.rotation.x = this.rx;
+                            Editor.camera.rotation.y = this.ry;
+                            Editor.camera.rotation.z = this.rz;
+                        })
                         .easing( TWEEN.Easing.Exponential.InOut )
-                        .start();
+                        );                        
+                        if (t.length>1) t[t.length-2].chain(t[t.length-1]);
+                } else if (aa.atype.id==1) {
+
+                    
+                } else if (aa.atype.id==3) {
+                    var pp = angular.copy(currentPos);
+                    var radius = Editor.camera.position.distanceTo(Editor.scene.position);
+                    console.log(radius);
+                    var o = {ts:0};
+                    t.push(new TWEEN.Tween(o)
+                    .to({ts:360}, 10000 )
+                    .onUpdate(function() {                
+                        Editor.camera.position.x = radius * Math.sin( THREE.Math.degToRad( this.ts ) );
+                        Editor.camera.position.z = radius * Math.cos( THREE.Math.degToRad( this.ts ) );
+                        Editor.camera.lookAt(Editor.scene.position);
+                    }));
+                    currentPos.x = radius * Math.sin( THREE.Math.degToRad( 360 ));                    
+                    currentPos.z = radius * Math.cos( THREE.Math.degToRad( 360 ));      
+
+                    if (t.length>1) t[t.length-2].chain(t[t.length-1]);                                      
                 }
             }
+            if (t.length>0) t[0].start();
         }        
 
 
@@ -496,13 +527,18 @@
 			this.duration = duration;
 			this.loop = false;
 			this.start_time = start_time;
-            this.adata = {x:adata.position.x,y:adata.position.y,z:adata.position.z};
+            this.adata = adata;
+            if (this.atype.id==0) {
+                this.adata = {x:adata.position.x,y:adata.position.y,z:adata.position.z,rx:adata.rotation.x,ry:adata.rotation.y,rz:adata.rotation.z};    
+            }            
             this.type = 'action';
 
             var geometry = new THREE.BoxGeometry( 5, 5, 5 );
             var material = new THREE.MeshBasicMaterial( { color: this.atype.color, visible: true } );                    
             var zhelper = new THREE.Mesh( geometry, material );
+            
             zhelper.position.copy(adata.position); 
+
             Editor.sceneHelpers.add( zhelper );
             
             var cam = new THREE.PerspectiveCamera( 50, 1, 1, 2000 );
