@@ -513,6 +513,35 @@
                 } );      
         }
 
+        Viewport.testDAE = function() {
+                var loader = new  THREE.ColladaLoader();
+                loader.options.convertUpAxis = true;    
+                loader.load('assets/33.dae', function (collada){
+                    dae = collada.scene;
+                    dae.scale.x = dae.scale.y = dae.scale.z = 3;
+                    dae.traverse(function (child){
+                        if (child.colladaId == "Suzanne"){
+                            child.traverse(function(e){
+                                e.castShadow = true;
+                                e.receiveShadow = true;
+                                if (e.material instanceof THREE.MeshPhongMaterial){
+                                    e.material.needsUpdate = true;
+                                }                   
+                            });
+                        }
+                        else if (child.colladaId == "Plane"){
+                            child.traverse(function(e){
+                                e.castShadow = true;
+                                e.receiveShadow = true;
+                            });
+                        }   
+                    });
+                    dae.updateMatrix();         
+                    Editor.scene.add(dae);
+                    // Editor.addObject( mesh );
+                });             
+        }
+
         signals.rendererChanged.add(function (newRenderer)
         {
             if (renderer !== null)

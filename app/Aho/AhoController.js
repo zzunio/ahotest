@@ -59,6 +59,10 @@
             Viewport.testAnimation1();
         }
 
+        $scope.testDAE = function() {
+            Viewport.testDAE();
+        }        
+
         $scope.ss1 = function ()
         {
             Editor.camera.zoom = 2;
